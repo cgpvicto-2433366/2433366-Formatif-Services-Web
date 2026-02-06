@@ -1,5 +1,5 @@
 import express from 'express';
-import { listeSalutations, ajouterSalutation, bienvenue } from '../controllers/salutation.controller.js';
+import { listeSalutations, ajouterSalutation, bienvenue, listeSalutationsPourUnelangue } from '../controllers/salutation.controller.js';
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router.get('/api/salutations/liste', listeSalutations)
 /**
  * Afficher une salutation aléatoire
  */
-//router.get('/api/salutations/hasard/:langue', salutationAleatoire)
+router.get('/api/salutations/liste_pour_langue/:code', listeSalutationsPourUnelangue)
 
 /**
  * Route pour ajouter une salutation

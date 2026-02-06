@@ -25,7 +25,6 @@ export const listeSalutations = async (req, res) =>{
             message: "Erreur lors de la recuperation de la liste des salutations"
         });
     };
-
 }
 
 
@@ -63,3 +62,40 @@ export const ajouterSalutation = async (req, res) => {
         })
     }
 }
+
+/**
+ * Afficher la liste des salutations pour une langue donne
+ */
+export const listeSalutationsPourUnelangue = async (req, res) =>{
+
+    // Teste si le paramètre code est présent et valide
+    if(!req.params.code){
+        res.status(400);
+        res.send({
+            message: "code de langue absent"
+        });
+        return;
+    }
+
+    try{
+        const liste = await salutationModel.getSalutationsForLang(req.params.code)
+
+        if(liste == null){
+            res.status(400);
+            res.send({
+                message: "Aucune salutation trouvé"
+            });
+            return;
+        }
+
+        res.status(200).json(liste)
+    } catch (erreur) {
+        console.log('Erreur : ', erreur);
+        res.status(500)
+        res.send({
+            message: "Erreur lors de la recuperation de la liste des salutations pour la langue " + req.params.code
+        });
+    };
+}
+
+
