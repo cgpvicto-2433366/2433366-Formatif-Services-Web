@@ -1,6 +1,15 @@
 import salutationModel from "../models/salutations.model.js";
 
 /**
+ * Message de bienvenu
+ */
+export const bienvenue=(req, res)=>{
+    res.status(200)
+    res.end("Bienvenu sur mon premier API!")
+}
+
+
+/**
  * Afficher la liste des salutations
  */
 export const listeSalutations = async (req, res) =>{

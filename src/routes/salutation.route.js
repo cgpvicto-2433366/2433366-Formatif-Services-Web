@@ -1,15 +1,12 @@
 import express from 'express';
-import { listeSalutations, ajouterSalutation } from '../controllers/salutation.controller.js';
+import { listeSalutations, ajouterSalutation, bienvenue } from '../controllers/salutation.controller.js';
 
 const router = express.Router();
 
 /**
  * Message de bienvenue
  */
-router.get('/api', (req, res)=>{
-    res.status(200)
-    res.end("Bienvenu sur mon premier API!")
-})
+router.get('/api',bienvenue)
 
 /**
  * Afficher la liste des salutations
