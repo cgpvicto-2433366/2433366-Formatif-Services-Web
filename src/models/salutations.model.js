@@ -37,9 +37,19 @@ const getSalutations =async() =>{
 
 // AJouter une salutations
 const addSalutation =async(code, langue, message) =>{
-    const requete = `INSERT INTO salutations (code_langue, langue, message) VALUE (?,?,?) `
+    const requete = `INSERT INTO salutations (code_langue, langue, message) VALUE (?,?,?) `;
+    const params = [code, langue, message];
+
+    try{
+        const [resultats] = await pool.query(requete, params);
+        return resultats[0] ?? null;
+    } catch (erreur) {
+        console.log(`Erreur, code: ${erreur.code} sqlState ${erreur.sqlState} : 
+                    ${erreur.sqlMessage}`);
+        throw erreur;
+    }
 }
 
 export default {
-    getSalutation, getSalutations
+    getSalutation, getSalutations, addSalutation
 }

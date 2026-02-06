@@ -40,7 +40,7 @@ export const ajouterSalutation = async (req, res) => {
         }
 
         //ajout de la salutation
-        ajouter(code_langue, langue, message);
+        const reponse = await salutationModel.addSalutation(code_langue, langue, message);
 
         return res.status(201).json({
             "message" : "Salutation ajoutée",
@@ -48,6 +48,7 @@ export const ajouterSalutation = async (req, res) => {
         })
 
     } catch(Error){
+        console.log('Erreur : ', Error);
         return res.status(500).json({
             "message" : "Erreur serveur",
         })
