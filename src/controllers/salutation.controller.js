@@ -1,40 +1,24 @@
-import { salutations, ajouter } from "../models/salutations.model.js";
+import salutationModel from "../models/salutations.model.js";
 
 /**
  * Afficher la liste des salutations
  */
-export const listeSalutations = (req, res) =>{
-    res.status(200).json(salutations)
+export const listeSalutations = async (req, res) =>{
+    try{
+        const liste = await salutationModel.getSalutations()
+        res.status(200).json(liste)
+    } catch (erreur) {
+        // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car 
+        //  c'est du serveur que provient l'erreur.
+        console.log('Erreur : ', erreur);
+        res.status(500)
+        res.send({
+            message: "Erreur lors de la recuperation de la liste des salutations"
+        });
+    };
+
 }
 
-/**
- * Afficher une salutation aléatoire
- */
-export const salutationAleatoire =(req, res) =>{
-   const langue = req.params.langue;
-
-    //Verifier la presence du parametre langue
-    if(!langue){
-        return res.status(400).json({
-            "message": "Le parametre langue est absent!"
-        })
-    }
-
-   // filtrer le tableau selon le code rentrer
-   const salutationSelonCode = salutations.filter(salutation=> salutation.code_langue === langue)
-
-   if (salutationSelonCode.length === 0){
-        return res.status(404).json(  {
-            "message": "Erreur, le code " + langue + " n\'existe pas"
-        })
-   }
-  
-   // dans le cas contraire on retourne une salutation aleatoire
-   //Generation d'un index aleatoire compatible avec l'ensemble des valeurs pouvant 
-   //être retourné
-   let indice = Math.floor(Math.random()* salutationSelonCode.length)
-   res.status(200).json(salutationSelonCode[indice])
-}
 
 /**
  * Ajouter une salutation
@@ -42,7 +26,7 @@ export const salutationAleatoire =(req, res) =>{
  * @param {*} res 
  * @returns
  */
-export const ajouterSalutation = (req, res) => {
+export const ajouterSalutation = async (req, res) => {
 
     try{
 
@@ -69,4 +53,3 @@ export const ajouterSalutation = (req, res) => {
         })
     }
 }
-

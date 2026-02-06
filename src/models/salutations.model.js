@@ -1,42 +1,45 @@
-const salutations = [
-    { code_langue : "fr", langue : "Français", message : "Bonjour le monde"},
-    { code_langue : "fr", langue : "Français", message : "Bon matin"},
-    { code_langue : "fr", langue : "Français", message : "Salut"},
-    { code_langue : "fr", langue : "Français", message : "Bonne nuit je vais travailler"},
-    { code_langue : "en", langue : "Anglais", message : "Hello world"},
-    { code_langue : "en", langue : "Anglais", message : "Good morning"},
-    { code_langue : "en", langue : "Anglais", message : "Hi"},
-    { code_langue : "en", langue : "Anglais", message : "Good night, i''m going to work"},
-    { code_langue : "es", langue : "Espagnol", message : "Hola Mundo"},
-    { code_langue : "es", langue : "Espagnol", message : "Buenos dias"},
-    { code_langue : "es", langue : "Espagnol", message : "Hola"},
-    { code_langue : "es", langue : "Espagnol", message : "Buenas noches me voy a trabajar"},
-    { code_langue : "de", langue : "Allemand", message : "Hallo Welt"},
-    { code_langue : "de", langue : "Allemand", message : "guten Morgen"},
-    { code_langue : "de", langue : "Allemand", message : "Hallo"},
-    { code_langue : "de", langue : "Allemand", message : "Gute Nacht, ich gehe zur Arbei"}
-];
+import pool from '../config/db.js';
 
+const getSalutation = async (id) => {
 
-/**
- * Fonction pour ajouter des salutations dans le tableau
- */
-function ajouter(code, langue, message){
+    // On spécifie LIMIT 1 pour s'assurer de ne récupérer qu'un seul enregistrement
+    const requete = `SELECT code_langue, langue, message FROM salutations WHERE id = ? LIMIT 1`;
+    const params = [id]
 
-    //verification de la présence de tous les infos
-    if (!code || !langue || !message){
-        throw new Error("Valeur obligatoire manquante.")
+    try {
+        // Attention: mysql2 retourne un tableau avec deux éléments : les résultats et 
+        //      les informations sur les champs
+        // Nous n'avons besoin que des résultats ici (décomposition du tableau en ignorant 
+        //      le second élément)
+        const [resultats] = await pool.query(requete, params);
+        // Retourne le premier élément du tableau ou null si vide
+        return resultats[0] ?? null;
+    } catch (erreur) {
+        console.log(`Erreur, code: ${erreur.code} sqlState ${erreur.sqlState} : 
+                    ${erreur.sqlMessage}`);
+        throw erreur;
     }
+};
 
-    //ajout du nouveau champ
-    salutations.push({
-        code_langue: code,
-        langue: langue,
-        message: message
-    })
+// recuperer toutes les salutations
+const getSalutations =async() =>{
+    const requete= `SELECT code_langue, langue, message FROM salutations`
+
+    try{
+        const [resultats] = await pool.query(requete);
+        return resultats;
+    } catch (erreur) {
+        console.log(`Erreur, code: ${erreur.code} sqlState ${erreur.sqlState} : 
+                    ${erreur.sqlMessage}`);
+        throw erreur;
+    }
 }
 
-export { 
-    salutations, 
-    ajouter
-};
+// AJouter une salutations
+const addSalutation =async(code, langue, message) =>{
+    const requete = `INSERT INTO salutations (code_langue, langue, message) VALUE (?,?,?) `
+}
+
+export default {
+    getSalutation, getSalutations
+}
